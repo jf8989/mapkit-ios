@@ -4,7 +4,7 @@ import Combine
 import CoreLocation
 
 /// Contract for location/authorization streams (Combine-only).
-public protocol LocationServiceType {
+public protocol LocationServiceType { 
     var authorizationStatus: AnyPublisher<CLAuthorizationStatus, Never> { get }
     var locationUpdates: AnyPublisher<CLLocation, Never> { get }
 

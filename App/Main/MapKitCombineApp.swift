@@ -6,9 +6,11 @@ import SwiftUI
 /// Root composes `MainView` only; no business logic here.
 @main
 struct MapKitCombineApp: App {
+    private let env = AppEnvironment.live
+
     var body: some Scene {
         WindowGroup {
-            MainView()
+            MainView(env: env)
         }
     }
 }

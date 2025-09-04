@@ -1,14 +1,36 @@
 // App/PlacesTab/PlacesTabView.swift
 import SwiftUI
 
-/// Placeholder for the Places list tab.
-/// Phase 0: Static list; later phases will consume `[VisitedPlace]` from VM.
+/// Places tab: reads `[VisitedPlace]` from shared VM and lists them.
 struct PlacesTabView: View {
+    @ObservedObject var vm: MapTabViewModel
+
     var body: some View {
         List {
             Section("Visited") {
-                Text("No places yet.")
-                    .foregroundStyle(.secondary)
+                if vm.visited.isEmpty {
+                    Text("No places yet.")
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(vm.visited) { place in
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(place.title).font(.body.weight(.semibold))
+                            if !place.subtitle.isEmpty {
+                                Text(place.subtitle).font(.footnote)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Text(
+                                place.timestamp.formatted(
+                                    date: .abbreviated,
+                                    time: .shortened
+                                )
+                            )
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                        }
+                        .padding(.vertical, 4)
+                    }
+                }
             }
         }
         .listStyle(.insetGrouped)
@@ -17,5 +39,5 @@ struct PlacesTabView: View {
 }
 
 #Preview {
-    NavigationStack { PlacesTabView() }
+    MainView(env: .live)
 }

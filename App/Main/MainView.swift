@@ -1,16 +1,19 @@
 // App/Main/MainView.swift
 import SwiftUI
 
-/// Root shell: TabView with each tab hosted inside its own NavigationStack.
-/// Navigation guardrails:
-/// - Separate back stacks per tab
-/// - Value-based destinations only (added in later phases)
-/// - No custom Binding(get:set:) to VM state
 struct MainView: View {
+    let env: AppEnvironment
+    @StateObject private var mapVM: MapTabViewModel
+
+    init(env: AppEnvironment) {
+        self.env = env
+        _mapVM = StateObject(wrappedValue: MapTabViewModel(env: env))
+    }
+
     var body: some View {
         TabView {
             NavigationStack {
-                MapTabView()
+                MapTabView(vm: mapVM)
                     .navigationTitle("Map")
             }
             .tabItem {
@@ -19,7 +22,7 @@ struct MainView: View {
             }
 
             NavigationStack {
-                PlacesTabView()
+                PlacesTabView(vm: mapVM)
                     .navigationTitle("Places")
             }
             .tabItem {
@@ -31,5 +34,5 @@ struct MainView: View {
 }
 
 #Preview {
-    MainView()
+    MainView(env: .live)
 }

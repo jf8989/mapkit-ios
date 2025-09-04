@@ -7,11 +7,11 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		74B69AEC2E694C8D00AC0297 /* MapKitCombineApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MapKitCombineApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		74B69AEC2E694C8D00AC0297 /* MapKitCombineAppCombineApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MapKitCombineAppCombineApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		74B69BA02E6960DA00AC0297 /* Exceptions for "App" folder in "MapKit" target */ = {
+		74B69BA02E6960DA00AC0297 /* Exceptions for "App" folder in "MapKitCombineApp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Engine/Clients/.keep,
@@ -27,7 +27,7 @@
 				Features/MapTab/Helpers/.keep,
 				Features/MapTab/UIState/.keep,
 			);
-			target = 74B69AEB2E694C8D00AC0297 /* MapKit */;
+			target = 74B69AEB2E694C8D00AC0297 /* MapKitCombineApp */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -35,7 +35,7 @@
 		74B69AEE2E694C8D00AC0297 /* App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				74B69BA02E6960DA00AC0297 /* Exceptions for "App" folder in "MapKit" target */,
+				74B69BA02E6960DA00AC0297 /* Exceptions for "App" folder in "MapKitCombineApp" target */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -64,7 +64,7 @@
 		74B69AED2E694C8D00AC0297 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				74B69AEC2E694C8D00AC0297 /* MapKitCombineApp.app */,
+				74B69AEC2E694C8D00AC0297 /* MapKitCombineAppCombineApp.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -72,9 +72,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		74B69AEB2E694C8D00AC0297 /* MapKit */ = {
+		74B69AEB2E694C8D00AC0297 /* MapKitCombineApp */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 74B69AF72E694C8F00AC0297 /* Build configuration list for PBXNativeTarget "MapKit" */;
+			buildConfigurationList = 74B69AF72E694C8F00AC0297 /* Build configuration list for PBXNativeTarget "MapKitCombineApp" */;
 			buildPhases = (
 				74B69AE82E694C8D00AC0297 /* Sources */,
 				74B69AE92E694C8D00AC0297 /* Frameworks */,
@@ -87,11 +87,11 @@
 			fileSystemSynchronizedGroups = (
 				74B69AEE2E694C8D00AC0297 /* App */,
 			);
-			name = MapKit;
+			name = MapKitCombineApp;
 			packageProductDependencies = (
 			);
 			productName = "swift-ios-template";
-			productReference = 74B69AEC2E694C8D00AC0297 /* MapKitCombineApp.app */;
+			productReference = 74B69AEC2E694C8D00AC0297 /* MapKitCombineAppCombineApp.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -109,7 +109,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 74B69AE72E694C8D00AC0297 /* Build configuration list for PBXProject "MapKit" */;
+			buildConfigurationList = 74B69AE72E694C8D00AC0297 /* Build configuration list for PBXProject "MapKitCombineApp" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -123,7 +123,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				74B69AEB2E694C8D00AC0297 /* MapKit */,
+				74B69AEB2E694C8D00AC0297 /* MapKitCombineApp */,
 			);
 		};
 /* End PBXProject section */
@@ -291,7 +291,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Ravn-iOS-Nerdery.swift-ios-template";
-				PRODUCT_NAME = MapKitCombineApp;
+				PRODUCT_NAME = MapKitCombineAppCombineApp;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -319,7 +319,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Ravn-iOS-Nerdery.swift-ios-template";
-				PRODUCT_NAME = MapKitCombineApp;
+				PRODUCT_NAME = MapKitCombineAppCombineApp;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -329,7 +329,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		74B69AE72E694C8D00AC0297 /* Build configuration list for PBXProject "MapKit" */ = {
+		74B69AE72E694C8D00AC0297 /* Build configuration list for PBXProject "MapKitCombineApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				74B69AF52E694C8F00AC0297 /* Debug */,
@@ -338,7 +338,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		74B69AF72E694C8F00AC0297 /* Build configuration list for PBXNativeTarget "MapKit" */ = {
+		74B69AF72E694C8F00AC0297 /* Build configuration list for PBXNativeTarget "MapKitCombineApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				74B69AF82E694C8F00AC0297 /* Debug */,
