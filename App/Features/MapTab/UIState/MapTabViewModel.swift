@@ -20,6 +20,9 @@ public final class MapTabViewModel: ObservableObject {
     // UI state
     @Published public private(set) var distanceMeters: Double = 0
     @Published public private(set) var visited: [VisitedPlace] = []
+    /// Latest known coordinate (nil until we get a real fix). View uses this to center the map.
+    @Published public private(set) var currentCoordinate:
+        CLLocationCoordinate2D?
     @Published public var alert: AlertState?
 
     // Selection (for pin tap later)
@@ -44,8 +47,31 @@ public final class MapTabViewModel: ObservableObject {
     // MARK: - Intents
 
     public func startTracking() {
+        // Ask once; then react to authorization stream for actual start/stop.
         env.locationService.requestWhenInUseAuthorization()
-        env.locationService.startUpdates()
+
+        // React to permission changes (includes the current value on subscribe).
+        env.locationService.authorizationStatus
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] status in
+                guard let self else { return }
+                switch status {
+                case .authorizedAlways, .authorizedWhenInUse:
+                    self.env.locationService.startUpdates()
+                case .denied, .restricted:
+                    self.env.locationService.stopUpdates()
+                    self.alert = AlertState(
+                        title: "Location Permission",
+                        message: AppError.notAuthorized.userMessage
+                    )
+                case .notDetermined:
+                    // Keep waiting; system will prompt.
+                    break
+                @unknown default:
+                    break
+                }
+            }
+            .store(in: &bag.cancellables)
 
         // 1) Process raw locations → 20m gate + distance accumulation
         env.locationService.locationUpdates
@@ -57,6 +83,8 @@ public final class MapTabViewModel: ObservableObject {
                     self.startLocation = location
                     self.lastCheckpoint = location
                 }
+                // Always publish the latest coordinate for the View to center on.
+                self.currentCoordinate = location.coordinate
 
                 if let last = self.lastCheckpoint {
                     let step = location.distance(from: last)

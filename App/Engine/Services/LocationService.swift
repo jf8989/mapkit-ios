@@ -25,18 +25,15 @@ public final class LocationService: NSObject, LocationServiceType {
         manager.distanceFilter = kCLDistanceFilterNone
         manager.pausesLocationUpdatesAutomatically = true
 
+        // Publish current status immediately so subscribers react on first subscribe.
+        authSubject.send(manager.authorizationStatus)
+
         bridge.locationSubject
             .sink { [weak self] in self?.locationSubject.send($0) }
             .store(in: &cancellables)
 
         bridge.authSubject
             .sink { [weak self] in self?.authSubject.send($0) }
-            .store(in: &cancellables)
-
-        // If the delegate emits a failure, we currently just drop it.
-        // VM maps geocoding errors to UI; location manager errors here are rare.
-        bridge.errorSubject
-            .sink { _ in /* log lane if needed */ }
             .store(in: &cancellables)
     }
 
