@@ -1,4 +1,4 @@
-// File: /App/Main/MainView.swift
+// App/Main/MainView.swift
 import SwiftUI
 
 /// Root shell: TabView with each tab hosted inside its own NavigationStack.

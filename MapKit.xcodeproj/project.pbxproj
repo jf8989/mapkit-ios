@@ -10,9 +10,37 @@
 		74B69AEC2E694C8D00AC0297 /* MapKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MapKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		74B69BA02E6960DA00AC0297 /* Exceptions for "App" folder in "MapKit" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Engine/.keep,
+				Engine/Clients/.keep,
+				Engine/Decorators/.keep,
+				Engine/DTOs/.keep,
+				Engine/Factories/.keep,
+				Engine/Helpers/.keep,
+				Engine/Mappers/.keep,
+				Engine/Network/.keep,
+				Engine/Providers/.keep,
+				Engine/Services/.keep,
+				Extensions/.keep,
+				MapTab/Components/.keep,
+				MapTab/Helpers/.keep,
+				MapTab/UIState/.keep,
+				Model/.keep,
+				Protocols/.keep,
+			);
+			target = 74B69AEB2E694C8D00AC0297 /* MapKit */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		74B69AEE2E694C8D00AC0297 /* App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				74B69BA02E6960DA00AC0297 /* Exceptions for "App" folder in "MapKit" target */,
+			);
 			path = App;
 			sourceTree = "<group>";
 		};
