@@ -1,0 +1,40 @@
+disabled_rules:
+  - trailing_whitespace
+  - todo
+  - type_body_length
+  - file_length
+
+opt_in_rules:
+  - empty_count
+  - fatal_error_message
+  - first_where
+  - number_separator
+  - private_action
+  - private_outlet
+  - redundant_nil_coalescing
+  - sorted_imports
+  - unowned_variable_capture
+  - vertical_parameter_alignment_on_call
+
+line_length:
+  ignores_comments: true
+  ignores_function_declarations: true
+  ignores_urls: true
+  warning: 120
+  error: 140
+
+identifier_name:
+  min_length:
+    warning: 2
+  excluded: [id, vm, x, y, dx, dy, ok]
+
+type_name:
+  max_length: 40
+
+included:
+  - App
+
+excluded:
+  - Carthage
+  - Pods
+reporter: "xcode"

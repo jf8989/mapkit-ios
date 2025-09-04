@@ -1,0 +1,15 @@
+# File: /.swiftformat
+--indent 4
+--wraparguments before-first
+--wrapcollections before-first
+--maxwidth 120
+--stripunusedargs closure-only
+--ranges no-space
+--self remove
+--ifdef no-indent
+--trimwhitespace always
+--header ignore
+--binarygrouping none
+--decimalgrouping 3,6
+--commas inline
+--assignments aligned

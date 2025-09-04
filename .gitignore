@@ -1,0 +1,35 @@
+# macOS cruft
+.DS_Store
+**/.DS_Store
+*.swp
+
+# Xcode build products
+build/
+DerivedData/
+
+# User-specific settings
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+
+# Swift Package Manager
+.build/
+Packages/
+SourcePackages/
+.swiftpm/
+
+# Dependency lockfile (recommended to COMMIT for reproducible builds)
+**/Package.resolved
+
+# Editor & tooling noise
+.vscode/
+.idea/
+*.orig
+*~
+# SwiftLint cache
+.swiftlint.cache
+
+# Local secrets (if you ever add dotenv-style files)
+.env
+.env.*
