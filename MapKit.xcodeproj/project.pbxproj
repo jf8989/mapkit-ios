@@ -23,9 +23,9 @@
 				Engine/Network/.keep,
 				Engine/Providers/.keep,
 				Extensions/.keep,
-				MapTab/Components/.keep,
-				MapTab/Helpers/.keep,
-				MapTab/UIState/.keep,
+				Features/MapTab/Components/.keep,
+				Features/MapTab/Helpers/.keep,
+				Features/MapTab/UIState/.keep,
 			);
 			target = 74B69AEB2E694C8D00AC0297 /* MapKit */;
 		};
