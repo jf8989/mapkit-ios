@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		74B69AEC2E694C8D00AC0297 /* swift-ios-template.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "swift-ios-template.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		74B69AEC2E694C8D00AC0297 /* MapKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MapKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -40,7 +40,7 @@
 		74B69AED2E694C8D00AC0297 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				74B69AEC2E694C8D00AC0297 /* swift-ios-template.app */,
+				74B69AEC2E694C8D00AC0297 /* MapKit.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,9 +48,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		74B69AEB2E694C8D00AC0297 /* swift-ios-template */ = {
+		74B69AEB2E694C8D00AC0297 /* MapKit */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 74B69AF72E694C8F00AC0297 /* Build configuration list for PBXNativeTarget "swift-ios-template" */;
+			buildConfigurationList = 74B69AF72E694C8F00AC0297 /* Build configuration list for PBXNativeTarget "MapKit" */;
 			buildPhases = (
 				74B69AE82E694C8D00AC0297 /* Sources */,
 				74B69AE92E694C8D00AC0297 /* Frameworks */,
@@ -63,11 +63,11 @@
 			fileSystemSynchronizedGroups = (
 				74B69AEE2E694C8D00AC0297 /* App */,
 			);
-			name = "swift-ios-template";
+			name = MapKit;
 			packageProductDependencies = (
 			);
 			productName = "swift-ios-template";
-			productReference = 74B69AEC2E694C8D00AC0297 /* swift-ios-template.app */;
+			productReference = 74B69AEC2E694C8D00AC0297 /* MapKit.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -85,7 +85,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 74B69AE72E694C8D00AC0297 /* Build configuration list for PBXProject "swift-ios-template" */;
+			buildConfigurationList = 74B69AE72E694C8D00AC0297 /* Build configuration list for PBXProject "MapKit" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -99,7 +99,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				74B69AEB2E694C8D00AC0297 /* swift-ios-template */,
+				74B69AEB2E694C8D00AC0297 /* MapKit */,
 			);
 		};
 /* End PBXProject section */
@@ -305,7 +305,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		74B69AE72E694C8D00AC0297 /* Build configuration list for PBXProject "swift-ios-template" */ = {
+		74B69AE72E694C8D00AC0297 /* Build configuration list for PBXProject "MapKit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				74B69AF52E694C8F00AC0297 /* Debug */,
@@ -314,7 +314,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		74B69AF72E694C8F00AC0297 /* Build configuration list for PBXNativeTarget "swift-ios-template" */ = {
+		74B69AF72E694C8F00AC0297 /* Build configuration list for PBXNativeTarget "MapKit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				74B69AF82E694C8F00AC0297 /* Debug */,
