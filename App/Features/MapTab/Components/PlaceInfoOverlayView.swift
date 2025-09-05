@@ -1,14 +1,18 @@
-// File: /App/MapTab/Components/PlaceInfoOverlay.swift
+// App/MapTab/Components/PlaceInfoOverlayView.swift
 
 import CoreLocation
 import SwiftUI
 
 /// Lightweight card that dismisses on outside tap or OK.
-struct PlaceInfoOverlay: View {
+struct PlaceInfoOverlayView: View {
     let place: VisitedPlace
     let onDismiss: () -> Void
 
     var body: some View {
+        placeInfoView
+    }
+    
+    var placeInfoView: some View {
         ZStack {
             Color.black.opacity(0.35)
                 .ignoresSafeArea()

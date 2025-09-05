@@ -4,13 +4,17 @@ import MapKit
 import SwiftUI
 
 /// Hosts the Map UI for both iOS 17+ (MapContentBuilder) and iOS 16 (legacy Map).
-struct MapCanvas: View {
+struct MapCanvasView: View {
     @ObservedObject var vm: MapTabViewModel
     @Binding var cameraPosition: MapCameraPosition
     @Binding var region: MKCoordinateRegion
     @Binding var showPlaceInfo: Bool
 
     var body: some View {
+        canvasView
+    }
+    
+    var canvasView: some View {
         Group {
             if #available(iOS 17, *) {
                 Map(position: $cameraPosition) {
@@ -31,7 +35,7 @@ struct MapCanvas: View {
                         }
                     }
                 }
-            } else {
+            } else { /// Fallback
                 Map(
                     coordinateRegion: $region,
                     showsUserLocation: true,

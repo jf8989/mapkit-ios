@@ -1,4 +1,4 @@
-// File: /App/MapTab/MapTabView.swift
+// App/MapTab/MapTabView.swift
 
 import Combine
 import MapKit
@@ -25,8 +25,8 @@ struct MapTabView: View {
 
     var body: some View {
         VStack(spacing: 8) {
-            DistanceHeader(meters: vm.distanceMeters)
-            MapCanvas(
+            DistanceHeaderView(meters: vm.distanceMeters)
+            MapCanvasView(
                 vm: vm,
                 cameraPosition: $cameraPosition,
                 region: $region,
@@ -48,7 +48,7 @@ struct MapTabView: View {
         // Pin info overlay (tap outside to dismiss)
         .overlay {
             if showPlaceInfo, let place = vm.selectedPlace {
-                PlaceInfoOverlay(place: place) {
+                PlaceInfoOverlayView(place: place) {
                     vm.select(place: nil)
                     showPlaceInfo = false
                 }

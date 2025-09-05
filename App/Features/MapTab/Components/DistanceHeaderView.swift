@@ -2,10 +2,14 @@
 
 import SwiftUI
 
-struct DistanceHeader: View {
+struct DistanceHeaderView: View {
     let meters: Double
 
     var body: some View {
+        distanceHeaderView
+    }
+    
+    var distanceHeaderView: some View {
         HStack(spacing: 6) {
             Text("Distance:").font(.subheadline)
             Text(meters, format: .number.precision(.fractionLength(0)))
