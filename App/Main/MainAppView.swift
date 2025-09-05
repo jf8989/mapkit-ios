@@ -14,17 +14,6 @@ struct MainAppView: View {
 
     var body: some View {
         mapAndPlacesViews
-            .onChange(of: scenePhase) { _, newPhase in
-                switch newPhase {
-                case .active:
-                    mapVM.startTracking()
-                case .background:
-                    mapVM.stopTracking()
-                default:
-                    break
-                }
-            }
-            .task { mapVM.startTracking() }  // kick on first launch
     }
 
     var mapAndPlacesViews: some View {
@@ -47,6 +36,27 @@ struct MainAppView: View {
                 Text("Places")
             }
         }
+        .onChange(of: scenePhase) { _, newPhase in
+            #if DEBUG
+                print(
+                    "[MainAppView] scenePhase → \(String(describing: newPhase))"
+                )
+            #endif
+            switch newPhase {
+            case .active:
+                mapVM.startTracking()
+            case .background:
+                mapVM.stopTracking()
+            default:
+                break
+            }
+        }
+        .task {
+            #if DEBUG
+                print("[MainAppView] initial task → startTracking()")
+            #endif
+            mapVM.startTracking()
+        }  // kick on first launch
     }
 }
 

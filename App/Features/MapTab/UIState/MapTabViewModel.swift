@@ -17,6 +17,12 @@ public final class MapTabViewModel: ObservableObject {
     private let env: AppEnvironment
     private let bag = TaskBag()
 
+    #if DEBUG
+        private func dlog(_ msg: String) {
+            print("[MapVM] \(msg)")
+        }
+    #endif
+
     // UI state
     @Published public private(set) var distanceMeters: Double = 0
     @Published public private(set) var visited: [VisitedPlace] = []
@@ -49,6 +55,9 @@ public final class MapTabViewModel: ObservableObject {
 
     public func startTracking() {
         // Idempotent guard: avoid double subscriptions.
+        #if DEBUG
+            dlog("startTracking() called. isTracking=\(isTracking)")
+        #endif
         if isTracking { return }
         isTracking = true
 
@@ -62,8 +71,16 @@ public final class MapTabViewModel: ObservableObject {
                 guard let self else { return }
                 switch status {
                 case .authorizedAlways, .authorizedWhenInUse:
+                    #if DEBUG
+                        dlog("auth=\(status) → startUpdatingLocation()")
+                    #endif
                     self.env.locationService.startUpdates()
                 case .denied, .restricted:
+                    #if DEBUG
+                        dlog(
+                            "auth=\(status) → stopUpdatingLocation(); alert not authorized"
+                        )
+                    #endif
                     self.env.locationService.stopUpdates()
                     self.alert = AlertState(
                         title: "Location Permission",
@@ -99,6 +116,11 @@ public final class MapTabViewModel: ObservableObject {
                         if let start = self.startLocation {
                             self.distanceMeters = location.distance(from: start)
                         }
+                        #if DEBUG
+                            dlog(
+                                "moved ≥20m (step=\(Int(step))) total=\(Int(self.distanceMeters)) → will trigger geocode on cadence"
+                            )
+                        #endif
                         self.movementSubject.send(location)
                     }
                 }
@@ -125,8 +147,14 @@ public final class MapTabViewModel: ObservableObject {
                     return Empty<(CLLocation, [CLPlacemark]), Never>()
                         .eraseToAnyPublisher()
                 }
+                #if DEBUG
+                    dlog(
+                        "geocoding @ lat=\(loc.coordinate.latitude), lon=\(loc.coordinate.longitude)"
+                    )
+                #endif
                 return self.env.geocodingService
                     .reverseGeocode(location: loc)
+
                     .map { placemarks -> (CLLocation, [CLPlacemark]) in
                         (loc, placemarks)
                     }
@@ -135,6 +163,9 @@ public final class MapTabViewModel: ObservableObject {
                             title: "Error",
                             message: AppError.geocodingFailed.userMessage
                         )
+                        #if DEBUG
+                            self?.dlog("geocoding failed → alert surfaced")
+                        #endif
                         // Return a typed value to keep the stream shape
                         return Just((loc, [] as [CLPlacemark]))
                             .setFailureType(to: Never.self)
@@ -152,6 +183,11 @@ public final class MapTabViewModel: ObservableObject {
                     timestamp: Date()
                 )
                 self.visited.append(place)
+                #if DEBUG
+                    self.dlog(
+                        "append visited (\(self.visited.count) total): \(place.title)"
+                    )
+                #endif
             }
             .store(in: &bag.cancellables)
     }
@@ -162,6 +198,9 @@ public final class MapTabViewModel: ObservableObject {
         env.locationService.stopUpdates()
         // Cancel Combine pipelines (auth, locations, timer).
         bag.cancellables.removeAll()
+        #if DEBUG
+            dlog("stopTracking() — cancelled pipelines and stopped updates")
+        #endif
     }
 
     public func select(place: VisitedPlace?) {
