@@ -14,16 +14,16 @@
 		74B69BA02E6960DA00AC0297 /* Exceptions for "App" folder in "MapKitCombineApp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Engine/Clients/.keep,
-				Engine/Decorators/.keep,
-				Engine/DTOs/.keep,
-				Engine/Factories/.keep,
-				Engine/Helpers/.keep,
-				Engine/Mappers/.keep,
-				Engine/Network/.keep,
-				Engine/Providers/.keep,
-				Extensions/.keep,
-				Features/MapTab/Helpers/.keep,
+				Core/Engine/Clients/.keep,
+				Core/Engine/Decorators/.keep,
+				Core/Engine/DTOs/.keep,
+				Core/Engine/Factories/.keep,
+				Core/Engine/Helpers/.keep,
+				Core/Engine/Mappers/.keep,
+				Core/Engine/Network/.keep,
+				Core/Engine/Providers/.keep,
+				Core/Extensions/.keep,
+				Core/Features/MapTab/Helpers/.keep,
 				Info.plist,
 			);
 			target = 74B69AEB2E694C8D00AC0297 /* MapKitCombineApp */;
