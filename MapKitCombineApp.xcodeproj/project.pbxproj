@@ -23,7 +23,6 @@
 				Engine/Network/.keep,
 				Engine/Providers/.keep,
 				Extensions/.keep,
-				Features/MapTab/Components/.keep,
 				Features/MapTab/Helpers/.keep,
 				Info.plist,
 			);

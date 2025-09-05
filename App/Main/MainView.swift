@@ -14,7 +14,7 @@ struct MainView: View {
         TabView {
             NavigationStack {
                 MapTabView(vm: mapVM)
-                    .navigationTitle("Map")
+                    .navigationTitle("Tracker")
             }
             .tabItem {
                 Image(systemName: "map")
@@ -23,7 +23,7 @@ struct MainView: View {
 
             NavigationStack {
                 PlacesTabView(vm: mapVM)
-                    .navigationTitle("Places")
+                    .navigationTitle("My Places")
             }
             .tabItem {
                 Image(systemName: "list.bullet")
