@@ -9,7 +9,7 @@ import CoreLocation
 /// - Consumers handle back-pressure (20m gate etc.).
 public final class LocationService: NSObject, LocationServiceType {
     private let manager = CLLocationManager()
-    private let bridge = LocationManagerDelegateBridge()
+    private let bridge = DelegateBridge()
 
     private let locationSubject = PassthroughSubject<CLLocation, Never>()
     private let authSubject = CurrentValueSubject<CLAuthorizationStatus, Never>(
@@ -56,5 +56,30 @@ public final class LocationService: NSObject, LocationServiceType {
 
     public func stopUpdates() {
         manager.stopUpdatingLocation()
+    }
+}
+
+// MARK: - Private delegate bridge
+private final class DelegateBridge: NSObject, CLLocationManagerDelegate {
+    let authSubject = PassthroughSubject<CLAuthorizationStatus, Never>()
+    let locationSubject = PassthroughSubject<CLLocation, Never>()
+    let errorSubject = PassthroughSubject<Error, Never>()
+
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        authSubject.send(manager.authorizationStatus)
+    }
+
+    func locationManager(
+        _ manager: CLLocationManager,
+        didUpdateLocations locations: [CLLocation]
+    ) {
+        locations.forEach { locationSubject.send($0) }
+    }
+
+    func locationManager(
+        _ manager: CLLocationManager,
+        didFailWithError error: Error
+    ) {
+        errorSubject.send(error)
     }
 }
