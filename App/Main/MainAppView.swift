@@ -14,7 +14,7 @@ struct MainAppView: View {
 
     var body: some View {
         mapAndPlacesViews
-            .onChange(of: scenePhase) { newPhase in
+            .onChange(of: scenePhase) { _, newPhase in
                 switch newPhase {
                 case .active:
                     mapVM.startTracking()

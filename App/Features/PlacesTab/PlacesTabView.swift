@@ -35,11 +35,18 @@ struct PlacesTabView: View {
                             .foregroundStyle(.secondary)
                         }
                         .padding(.vertical, 4)
+                        // Hint a preferred transition when inserted at the top.
+                        .transition(.move(edge: .top).combined(with: .opacity))
                     }
                 }
             }
         }
         .listStyle(.insetGrouped)
+        // Smooth animation when count changes (new item at top).
+        .animation(
+            .spring(response: 0.35, dampingFraction: 0.9, blendDuration: 0.15),
+            value: vm.visited.count
+        )
         .navigationBarTitleDisplayMode(.inline)
     }
 }
