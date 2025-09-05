@@ -1,16 +1,10 @@
-// App/MapTab/UIState/MapTabViewModel.swift
+// App/Core/AppFeatures/MapTabScreen/UIState/MapTabViewModel.swift
 
 import Combine
 import CoreLocation
 import Foundation
 
 /// ViewModel for the Map tab.
-/// Responsibilities:
-/// - Own location streams (via LocationServiceType)
-/// - Compute total distance from the initial fix
-/// - Emit a "moved ≥ 20 m" event
-/// - Every 5s, if movement occurred, reverse-geocode and append a VisitedPlace
-/// - Surface simple alert state (title/message)
 @MainActor
 public final class MapTabViewModel: ObservableObject {
     // Inputs
@@ -61,8 +55,7 @@ public final class MapTabViewModel: ObservableObject {
         if isTracking { return }
         isTracking = true
 
-        // Ask once; then react to authorization stream for actual start/stop.
-        env.locationService.requestWhenInUseAuthorization()
+        // AppShell owns prompting; VM reacts to authorization stream.
 
         // React to permission changes (includes the current value on subscribe).
         env.locationService.authorizationStatus

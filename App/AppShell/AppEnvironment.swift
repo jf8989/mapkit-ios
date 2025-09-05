@@ -1,4 +1,4 @@
-// App/Main/AppEnvironment.swift
+// App/AppShell/AppEnvironment.swift
 
 import Foundation
 
@@ -7,19 +7,26 @@ import Foundation
 public struct AppEnvironment {
     public let locationService: LocationServiceType
     public let geocodingService: GeocodingServiceType
+    public let permissionService: PermissionServiceType
 
     public init(
         locationService: LocationServiceType,
-        geocodingService: GeocodingServiceType
+        geocodingService: GeocodingServiceType,
+        permissionService: PermissionServiceType
     ) {
         self.locationService = locationService
         self.geocodingService = geocodingService
+        self.permissionService = permissionService
     }
 
-    public static var live: AppEnvironment {
-        .init(
-            locationService: LocationService(),
-            geocodingService: GeocodingService()
+    public static let live = {
+        let location = LocationService()
+        let geocoding = GeocodingService()
+        let permission = PermissionService(locationService: location)
+        return AppEnvironment(
+            locationService: location,
+            geocodingService: geocoding,
+            permissionService: permission
         )
-    }
+    }()
 }
