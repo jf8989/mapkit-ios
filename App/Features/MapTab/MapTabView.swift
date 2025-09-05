@@ -33,7 +33,7 @@ struct MapTabView: View {
                 showPlaceInfo: $showPlaceInfo
             )
         }
-        .onAppear { vm.startTracking() }
+        /// (start/stop handled at app level via scenePhase)
         // Error alert (permission/geocode)
         .alert(item: $vm.alert) { state in
             Alert(
@@ -67,4 +67,4 @@ struct MapTabView: View {
     }
 }
 
-#Preview { MainView(env: .live) }
+#Preview { MainAppView(env: .live) }

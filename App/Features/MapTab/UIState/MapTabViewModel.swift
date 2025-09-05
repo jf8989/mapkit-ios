@@ -29,6 +29,7 @@ public final class MapTabViewModel: ObservableObject {
     @Published public var selectedPlace: VisitedPlace?
 
     // Internals
+    private var isTracking = false
     private var startLocation: CLLocation?
     private var lastCheckpoint: CLLocation?
     private var lastGeocodedCheckpoint: CLLocation?
@@ -47,6 +48,10 @@ public final class MapTabViewModel: ObservableObject {
     // MARK: - Intents
 
     public func startTracking() {
+        // Idempotent guard: avoid double subscriptions.
+        if isTracking { return }
+        isTracking = true
+
         // Ask once; then react to authorization stream for actual start/stop.
         env.locationService.requestWhenInUseAuthorization()
 
@@ -152,8 +157,11 @@ public final class MapTabViewModel: ObservableObject {
     }
 
     public func stopTracking() {
+        guard isTracking else { return }
+        isTracking = false
         env.locationService.stopUpdates()
-        // Keep data; cancel streams by clearing bag if needed.
+        // Cancel Combine pipelines (auth, locations, timer).
+        bag.cancellables.removeAll()
     }
 
     public func select(place: VisitedPlace?) {

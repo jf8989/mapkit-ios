@@ -8,7 +8,7 @@ struct PlacesTabView: View {
     var body: some View {
         placesView
     }
-    
+
     var placesView: some View {
         List {
             Section("Visited") {
@@ -16,7 +16,9 @@ struct PlacesTabView: View {
                     Text("No places yet.")
                         .foregroundStyle(.secondary)
                 } else {
-                    ForEach(vm.visited) { place in
+                    ForEach(
+                        vm.visited.sorted(by: { $0.timestamp > $1.timestamp })
+                    ) { place in
                         VStack(alignment: .leading, spacing: 2) {
                             Text(place.title).font(.body.weight(.semibold))
                             if !place.subtitle.isEmpty {
@@ -43,5 +45,5 @@ struct PlacesTabView: View {
 }
 
 #Preview {
-    MainView(env: .live)
+    MainAppView(env: .live)
 }

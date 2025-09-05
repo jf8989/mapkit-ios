@@ -11,30 +11,12 @@ struct PlaceInfoOverlayView: View {
     var body: some View {
         placeInfoView
     }
-    
+
     var placeInfoView: some View {
-        ZStack {
-            Color.black.opacity(0.35)
-                .ignoresSafeArea()
-                .onTapGesture { onDismiss() }
-
-            VStack(spacing: 12) {
-                Text("Location Info").font(.headline)
-                Text(details)
-                    .multilineTextAlignment(.center)
-
-                Button("OK") { onDismiss() }
-                    .buttonStyle(.borderedProminent)
-            }
-            .padding(16)
-            .frame(maxWidth: 320)
-            .background(
-                .ultraThinMaterial,
-                in: RoundedRectangle(cornerRadius: 16, style: .continuous)
-            )
-            .shadow(radius: 10)
+        OverlayCardView(title: "Location Info", onDismiss: onDismiss) {
+            Text(details)
+                .multilineTextAlignment(.center)
         }
-        .transition(.opacity.combined(with: .scale))
         .animation(.easeOut(duration: 0.2), value: place.id)
     }
 

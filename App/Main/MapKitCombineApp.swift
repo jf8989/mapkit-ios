@@ -10,7 +10,7 @@ struct MapKitCombineApp: App {
 
     var body: some Scene {
         WindowGroup {
-            MainView(env: env)
+            MainAppView(env: env)
         }
     }
 }

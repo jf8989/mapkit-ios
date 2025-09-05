@@ -1,7 +1,7 @@
 // App/Main/MainView.swift
 import SwiftUI
 
-struct MainView: View {
+struct MainAppView: View {
     let env: AppEnvironment
     @StateObject private var mapVM: MapTabViewModel
 
@@ -10,10 +10,23 @@ struct MainView: View {
         _mapVM = StateObject(wrappedValue: MapTabViewModel(env: env))
     }
 
+    @Environment(\.scenePhase) private var scenePhase
+
     var body: some View {
         mapAndPlacesViews
+            .onChange(of: scenePhase) { newPhase in
+                switch newPhase {
+                case .active:
+                    mapVM.startTracking()
+                case .background:
+                    mapVM.stopTracking()
+                default:
+                    break
+                }
+            }
+            .task { mapVM.startTracking() }  // kick on first launch
     }
-    
+
     var mapAndPlacesViews: some View {
         TabView {
             NavigationStack {
@@ -38,5 +51,5 @@ struct MainView: View {
 }
 
 #Preview {
-    MainView(env: .live)
+    MainAppView(env: .live)
 }
