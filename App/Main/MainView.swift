@@ -11,6 +11,10 @@ struct MainView: View {
     }
 
     var body: some View {
+        mapAndPlacesViews
+    }
+    
+    var mapAndPlacesViews: some View {
         TabView {
             NavigationStack {
                 MapTabView(vm: mapVM)

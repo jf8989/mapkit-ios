@@ -6,6 +6,10 @@ struct PlacesTabView: View {
     @ObservedObject var vm: MapTabViewModel
 
     var body: some View {
+        placesView
+    }
+    
+    var placesView: some View {
         List {
             Section("Visited") {
                 if vm.visited.isEmpty {
