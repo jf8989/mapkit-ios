@@ -1,4 +1,4 @@
-// App/MapTab/Components/PlaceInfoOverlayView.swift
+// App/Core/AppFeatures/MapTabScreen/Components/PlaceInfoOverlayView.swift
 
 import CoreLocation
 import SwiftUI
@@ -27,11 +27,18 @@ struct PlaceInfoOverlayView: View {
             date: .abbreviated,
             time: .shortened
         )
-        return """
-            \(place.title)
-            \(place.subtitle)
-            Lat \(String(format: "%.5f", lat)), Lon \(String(format: "%.5f", lon))
-            \(when)
-            """
+
+        var lines: [String] = [
+            place.title,
+            place.subtitle,
+            "Lat \(String(format: "%.5f", lat)), Lon \(String(format: "%.5f", lon))",
+        ]
+
+        if let acc = place.horizontalAccuracy {
+            lines.append("Accuracy \(Int(acc)) m")
+        }
+
+        lines.append(when)
+        return lines.joined(separator: "\n")
     }
 }

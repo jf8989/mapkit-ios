@@ -50,10 +50,13 @@ extension MapTabViewModel {
         geocoder
             .reverseGeocode(location: location)
             .map { placemarks in
-                VisitedPlace.from(
-                    placemarks.first,
+                let acc = location.horizontalAccuracy
+                let safeAcc: CLLocationAccuracy? = acc >= 0 ? acc : nil
+                return VisitedPlaceFactory.make(
+                    from: placemarks.first,
                     coordinate: location.coordinate,
-                    timestamp: now()
+                    timestamp: now(),
+                    horizontalAccuracy: safeAcc
                 )
             }
             .eraseToAnyPublisher()

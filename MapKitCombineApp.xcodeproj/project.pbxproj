@@ -17,7 +17,6 @@
 				Core/Engine/Clients/.keep,
 				Core/Engine/Decorators/.keep,
 				Core/Engine/DTOs/.keep,
-				Core/Engine/Factories/.keep,
 				Core/Engine/Helpers/.keep,
 				Core/Engine/Mappers/.keep,
 				Core/Engine/Network/.keep,
