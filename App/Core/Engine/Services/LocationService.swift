@@ -42,6 +42,9 @@ public final class LocationService: NSObject, LocationServiceType {
     public var locationUpdates: AnyPublisher<CLLocation, Never> {
         locationSubject.eraseToAnyPublisher()
     }
+    public var errors: AnyPublisher<Error, Never> {
+        bridge.errorSubject.eraseToAnyPublisher()
+    }
 
     public func requestWhenInUseAuthorization() {
         manager.requestWhenInUseAuthorization()

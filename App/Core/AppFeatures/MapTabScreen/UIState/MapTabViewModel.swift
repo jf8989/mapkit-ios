@@ -92,6 +92,22 @@ public final class MapTabViewModel: ObservableObject {
             }
             .store(in: &bag.cancellables)
 
+        // Location manager errors → alert (except transient “location unknown”).
+        env.locationService.errors
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] err in
+                guard let self else { return }
+                if let clErr = err as? CLError, clErr.code == .locationUnknown {
+                    // Transient; ignore and let the next fix arrive.
+                    return
+                }
+                self.alert = AlertState(
+                    title: "Location Error",
+                    message: AppError.geocodingFailed.userMessage  // reuse copy; or introduce a new message if you prefer
+                )
+            }
+            .store(in: &bag.cancellables)
+
         // 1) Process raw locations → 20m gate
         env.locationService.locationUpdates
             .receive(on: DispatchQueue.main)  // UI updates on main
