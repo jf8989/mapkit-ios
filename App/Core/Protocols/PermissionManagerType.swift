@@ -1,10 +1,16 @@
-// App/Core/Protocols/PermissionServiceType.swift
+// App/Core/Protocols/PermissionManagerType.swift
 
 import Combine
-import CoreLocation
 
-public protocol PermissionServiceType {
-    var locationStatus: AnyPublisher<CLAuthorizationStatus, Never> { get }
-    func requestLocationWhenInUse()
-    func openSettings()
+// Location-only gate for now; each permission gets its own type.
+public enum LocationPermissionGate: Equatable {
+    case authorized
+    case needsRequest  // first prompt (notDetermined)
+    case needsSettings  // previously denied/restricted
+}
+
+// Manager API: explicit, permission-specific (no global enums/generics).
+public protocol PermissionManagerType {
+    var locationGate: AnyPublisher<LocationPermissionGate, Never> { get }
+    func requestLocationPermission()
 }

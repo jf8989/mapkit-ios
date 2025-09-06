@@ -1,31 +1,22 @@
-// App/Core/Engine/Services/PermissionService.swift
+// App/Core/Engine/Services/PermissionManager.swift
 
 import Combine
-import CoreLocation
-import UIKit
 
-/// App-level permission facade. Keeps prompting and Settings deep-link out of VMs.
-public final class PermissionService: PermissionServiceType {
-    private let locationService: LocationServiceType
+/// Router that forwards to specific permission handlers. Location-only for now.
+public final class PermissionManager: PermissionManagerType {
+    private let locationHandler: LocationPermissionHandlerType
 
     public init(locationService: LocationServiceType) {
-        self.locationService = locationService
+        self.locationHandler = LocationPermissionHandler(
+            locationService: locationService
+        )
     }
 
-    public var locationStatus: AnyPublisher<CLAuthorizationStatus, Never> {
-        locationService.authorizationStatus
+    public var locationGate: AnyPublisher<LocationPermissionGate, Never> {
+        locationHandler.gate
     }
 
-    public func requestLocationWhenInUse() {
-        locationService.requestWhenInUseAuthorization()
-    }
-
-    public func openSettings() {
-        guard let url = URL(string: UIApplication.openSettingsURLString) else {
-            return
-        }
-        DispatchQueue.main.async {
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
-        }
+    public func requestLocationPermission() {
+        locationHandler.request()
     }
 }

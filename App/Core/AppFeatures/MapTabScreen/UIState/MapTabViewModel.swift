@@ -10,11 +10,11 @@ public final class MapTabViewModel: ObservableObject {
     // Inputs
     private let env: AppEnvironment
     private let bag = TaskBag()
+    private let permissionManager: PermissionManagerType
+    private var permissionRequested = false
 
     #if DEBUG
-        private func dlog(_ msg: String) {
-            print("[MapVM] \(msg)")
-        }
+        private func dlog(_ msg: String) { print("[MapVM] \(msg)") }
     #endif
 
     // UI state
@@ -24,6 +24,9 @@ public final class MapTabViewModel: ObservableObject {
     @Published public private(set) var currentCoordinate:
         CLLocationCoordinate2D?
     @Published public var alert: AlertState?
+
+    /// Permission gate for Location (nil = authorized / no gate)
+    @Published public private(set) var gate: LocationPermissionGate?
 
     // Selection (for pin tap later)
     @Published public var selectedPlace: VisitedPlace?
@@ -43,6 +46,7 @@ public final class MapTabViewModel: ObservableObject {
 
     public init(env: AppEnvironment) {
         self.env = env
+        self.permissionManager = env.permissionManager
     }
 
     // MARK: - Intents
@@ -55,9 +59,26 @@ public final class MapTabViewModel: ObservableObject {
         if isTracking { return }
         isTracking = true
 
-        // AppShell owns prompting; VM reacts to authorization stream.
+        // 0) Permission flow — manager-as-router (request once; show gate only when denied)
+        permissionManager.locationGate
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] state in
+                guard let self else { return }
+                switch state {
+                case .authorized:
+                    self.gate = nil
+                case .needsRequest:
+                    if !self.permissionRequested {
+                        self.permissionRequested = true
+                        self.permissionManager.requestLocationPermission()  // system prompt “right there”
+                    }
+                case .needsSettings:
+                    self.gate = .needsSettings  // View shows a single-OK overlay; no settings deep link
+                }
+            }
+            .store(in: &bag.cancellables)
 
-        // React to permission changes (includes the current value on subscribe).
+        // React to authorization changes (includes the current value on subscribe).
         env.locationService.authorizationStatus
             .receive(on: DispatchQueue.main)
             .sink { [weak self] status in
@@ -80,7 +101,6 @@ public final class MapTabViewModel: ObservableObject {
                         message: AppError.notAuthorized.userMessage
                     )
                 case .notDetermined:
-                    // Keep waiting; system will prompt.
                     break
                 @unknown default:
                     break
@@ -124,7 +144,7 @@ public final class MapTabViewModel: ObservableObject {
         timer
             .compactMap { [weak self] _ in
                 self?.movementSubject.value as CLLocation?
-            }  // be explicit
+            }
             .filter { [weak self] (loc: CLLocation) in
                 guard let self else { return false }
                 guard let lastGeo = self.lastGeocodedCheckpoint else {
@@ -147,7 +167,6 @@ public final class MapTabViewModel: ObservableObject {
                 #endif
                 return self.env.geocodingService
                     .reverseGeocode(location: loc)
-
                     .map { placemarks -> (CLLocation, [CLPlacemark]) in
                         (loc, placemarks)
                     }
@@ -159,7 +178,6 @@ public final class MapTabViewModel: ObservableObject {
                         #if DEBUG
                             self?.dlog("geocoding failed → alert surfaced")
                         #endif
-                        // Return a typed value to keep the stream shape
                         return Just((loc, [] as [CLPlacemark]))
                             .setFailureType(to: Never.self)
                             .eraseToAnyPublisher()
