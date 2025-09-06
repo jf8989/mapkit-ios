@@ -2,8 +2,6 @@
 
 import Foundation
 
-/// Lightweight app error → user-message mapping.
-/// Keep framework-specific errors out of Views.
 public enum AppError: Error, Equatable {
     case geocodingFailed
     case notAuthorized

@@ -4,9 +4,6 @@ import Combine
 import CoreLocation
 
 /// Live implementation of LocationServiceType using a delegate bridge and Combine.
-/// Notes:
-/// - No async/await per assignment.
-/// - Consumers handle back-pressure (20m gate etc.).
 public final class LocationService: NSObject, LocationServiceType {
     private let manager = CLLocationManager()
     private let bridge = DelegateBridge()

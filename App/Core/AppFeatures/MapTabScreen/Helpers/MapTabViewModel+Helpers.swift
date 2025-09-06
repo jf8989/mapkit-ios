@@ -41,7 +41,7 @@ extension MapTabViewModel {
     }
 
     /// Reverse-geocodes a CLLocation into a VisitedPlace.
-    /// - Important: Does not hop threads; caller decides receive(on:).
+    /// Does not hop threads; caller decides receive(on:).
     public func geocodeVisitedPlace(
         _ geocoder: GeocodingServiceType,
         for location: CLLocation,

@@ -4,16 +4,15 @@ import Combine
 import CoreLocation
 import Foundation
 
-/// ViewModel for the Map tab.
 @MainActor
 public final class MapTabViewModel: ObservableObject {
-    // Inputs
+    /// Inputs
     let env: AppEnvironment
     let bag = TaskBag()
     private let permissionManager: PermissionManagerType
     private var permissionRequested = false
 
-    // UI state
+    /// UI state
     @Published public var distanceMeters: Double = 0
     @Published public var visited: [VisitedPlace] = []
     /// Latest known coordinate (nil until we get a real fix). View uses this to center the map.
@@ -24,19 +23,19 @@ public final class MapTabViewModel: ObservableObject {
     /// Permission gate for Location (nil = authorized / no gate)
     @Published public private(set) var gate: LocationPermissionGate?
 
-    // Selection (for pin tap later)
+    /// Selection (for pin tap later)
     @Published public var selectedPlace: VisitedPlace?
 
-    // Internals
+    /// Internals
     private var isTracking = false
     var startLocation: CLLocation?
     var lastCheckpoint: CLLocation?
     var lastGeocodedCheckpoint: CLLocation?
 
-    // Movement signal (emits when we pass the 20 m gate)
+    /// Movement signal (emits when we pass the 20 m gate)
     private let movementSubject = CurrentValueSubject<CLLocation?, Never>(nil)
 
-    // 5-second cadence
+    /// 5-second cadence
     private let timer = Timer.publish(every: 5, on: .main, in: .common)
         .autoconnect()
 

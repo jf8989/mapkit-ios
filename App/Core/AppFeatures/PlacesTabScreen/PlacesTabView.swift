@@ -1,7 +1,6 @@
 // App/PlacesTab/PlacesTabView.swift
 import SwiftUI
 
-/// Places tab: reads `[VisitedPlace]` from shared VM and lists them.
 struct PlacesTabView: View {
     @ObservedObject var vm: MapTabViewModel
 

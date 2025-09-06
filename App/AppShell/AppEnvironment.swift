@@ -3,7 +3,6 @@
 import Foundation
 
 /// AppEnvironment wires protocols to live implementations.
-/// Extend with `.preview` fakes during UI work or tests.
 public struct AppEnvironment {
     public let locationService: LocationServiceType
     public let geocodingService: GeocodingServiceType

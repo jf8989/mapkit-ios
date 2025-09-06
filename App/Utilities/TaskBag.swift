@@ -17,7 +17,6 @@ public final class TaskBag {
 
     public init() {}
 
-    /// Insert a fire-and-forget Task that should be canceled on deinit.
     @discardableResult
     public func insert(_ task: Task<Void, Never>) -> Task<Void, Never> {
         tasks.append(task)
