@@ -8,18 +8,18 @@ import Foundation
 @MainActor
 public final class MapTabViewModel: ObservableObject {
     // Inputs
-    private let env: AppEnvironment
-    private let bag = TaskBag()
+    let env: AppEnvironment
+    let bag = TaskBag()
     private let permissionManager: PermissionManagerType
     private var permissionRequested = false
 
     #if DEBUG
-        private func dlog(_ msg: String) { print("[MapVM] \(msg)") }
+        func dlog(_ msg: String) { print("[MapVM] \(msg)") }
     #endif
 
     // UI state
-    @Published public private(set) var distanceMeters: Double = 0
-    @Published public private(set) var visited: [VisitedPlace] = []
+    @Published public var distanceMeters: Double = 0
+    @Published public var visited: [VisitedPlace] = []
     /// Latest known coordinate (nil until we get a real fix). View uses this to center the map.
     @Published public private(set) var currentCoordinate:
         CLLocationCoordinate2D?
@@ -33,9 +33,9 @@ public final class MapTabViewModel: ObservableObject {
 
     // Internals
     private var isTracking = false
-    private var startLocation: CLLocation?
-    private var lastCheckpoint: CLLocation?
-    private var lastGeocodedCheckpoint: CLLocation?
+    var startLocation: CLLocation?
+    var lastCheckpoint: CLLocation?
+    var lastGeocodedCheckpoint: CLLocation?
 
     // Movement signal (emits when we pass the 20 m gate)
     private let movementSubject = CurrentValueSubject<CLLocation?, Never>(nil)
@@ -115,42 +115,7 @@ public final class MapTabViewModel: ObservableObject {
                 guard let self else { return }
 
                 if self.startLocation == nil {
-                    self.startLocation = location
-                    self.lastCheckpoint = location
-
-                    // One-shot immediate reverse-geocode on the very first fix.
-                    // UX: show the first pin right away (no 5s wait, no ≥20m gate).
-                    self.env.geocodingService
-                        .reverseGeocode(location: location)
-                        .catch { [weak self] _ -> Just<[CLPlacemark]> in
-                            self?.alert = AlertState(
-                                title: "Error",
-                                message: AppError.geocodingFailed.userMessage
-                            )
-                            return Just([])
-                        }
-                        .receive(on: DispatchQueue.main)
-                        .sink { [weak self] placemarks in
-                            guard let self else { return }
-                            self.lastGeocodedCheckpoint = location
-                            if let start = self.startLocation {
-                                self.distanceMeters = location.distance(
-                                    from: start
-                                )
-                            }
-                            let place = VisitedPlace.from(
-                                placemarks.first,
-                                coordinate: location.coordinate,
-                                timestamp: Date()
-                            )
-                            self.visited.append(place)
-                            #if DEBUG
-                                self.dlog(
-                                    "first-fix pin appended: \(place.title)"
-                                )
-                            #endif
-                        }
-                        .store(in: &self.bag.cancellables)
+                    self.handleFirstFix(location: location)
                 }
 
                 // Always publish the latest coordinate for the View to center on.
@@ -185,10 +150,10 @@ public final class MapTabViewModel: ObservableObject {
             }
             .flatMap {
                 [weak self] (loc: CLLocation) -> AnyPublisher<
-                    (CLLocation, [CLPlacemark]), Never
+                    (CLLocation, VisitedPlace?), Never
                 > in
                 guard let self else {
-                    return Empty<(CLLocation, [CLPlacemark]), Never>()
+                    return Empty<(CLLocation, VisitedPlace?), Never>()
                         .eraseToAnyPublisher()
                 }
                 #if DEBUG
@@ -196,43 +161,29 @@ public final class MapTabViewModel: ObservableObject {
                         "geocoding @ lat=\(loc.coordinate.latitude), lon=\(loc.coordinate.longitude)"
                     )
                 #endif
-                return self.env.geocodingService
-                    .reverseGeocode(location: loc)
-                    .map { placemarks -> (CLLocation, [CLPlacemark]) in
-                        (loc, placemarks)
-                    }
-                    .catch { [weak self] _ in
-                        self?.alert = AlertState(
-                            title: "Error",
-                            message: AppError.geocodingFailed.userMessage
-                        )
-                        #if DEBUG
-                            self?.dlog("geocoding failed → alert surfaced")
-                        #endif
-                        return Just((loc, [] as [CLPlacemark]))
-                            .setFailureType(to: Never.self)
-                            .eraseToAnyPublisher()
-                    }
-                    .eraseToAnyPublisher()
+                return geocodeVisitedPlace(
+                    self.env.geocodingService,
+                    for: loc,
+                    now: Date()
+                )
+                .map { (loc, Optional($0)) }
+                .catch { [weak self] _ in
+                    self?.alert = AlertState(
+                        title: "Error",
+                        message: AppError.geocodingFailed.userMessage
+                    )
+                    #if DEBUG
+                        self?.dlog("geocoding failed → alert surfaced")
+                    #endif
+                    return Just<(CLLocation, VisitedPlace?)>((loc, nil))
+                        .eraseToAnyPublisher()
+                }
+                .eraseToAnyPublisher()
             }
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] (loc: CLLocation, placemarks: [CLPlacemark]) in
+            .sink { [weak self] (loc: CLLocation, place: VisitedPlace?) in
                 guard let self else { return }
-                self.lastGeocodedCheckpoint = loc
-                if let start = self.startLocation {
-                    self.distanceMeters = loc.distance(from: start)
-                }
-                let place = VisitedPlace.from(
-                    placemarks.first,
-                    coordinate: loc.coordinate,
-                    timestamp: Date()
-                )
-                self.visited.append(place)
-                #if DEBUG
-                    self.dlog(
-                        "append visited (\(self.visited.count) total): \(place.title)"
-                    )
-                #endif
+                self.commitPinAndDistance(at: loc, place: place)
             }
             .store(in: &bag.cancellables)
     }
@@ -254,17 +205,5 @@ public final class MapTabViewModel: ObservableObject {
 
     public func dismissAlert() {
         alert = nil
-    }
-}
-
-// MARK: - AlertState (simple, UI-friendly)
-public struct AlertState: Identifiable, Equatable {
-    public let id = UUID()
-    public var title: String
-    public var message: String
-
-    public init(title: String, message: String) {
-        self.title = title
-        self.message = message
     }
 }

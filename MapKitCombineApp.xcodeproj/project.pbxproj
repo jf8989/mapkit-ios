@@ -14,7 +14,6 @@
 		74B69BA02E6960DA00AC0297 /* Exceptions for "App" folder in "MapKitCombineApp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Core/AppFeatures/MapTabScreen/Helpers/.keep,
 				Core/Engine/Clients/.keep,
 				Core/Engine/Decorators/.keep,
 				Core/Engine/DTOs/.keep,
