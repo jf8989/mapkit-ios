@@ -1,4 +1,5 @@
 // App/AppShell/AppEnvironment.swift
+
 import Foundation
 
 /// AppEnvironment wires protocols to live implementations.
