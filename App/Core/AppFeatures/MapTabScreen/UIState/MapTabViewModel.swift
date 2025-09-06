@@ -117,23 +117,54 @@ public final class MapTabViewModel: ObservableObject {
                 if self.startLocation == nil {
                     self.startLocation = location
                     self.lastCheckpoint = location
+
+                    // One-shot immediate reverse-geocode on the very first fix.
+                    // UX: show the first pin right away (no 5s wait, no ≥20m gate).
+                    self.env.geocodingService
+                        .reverseGeocode(location: location)
+                        .catch { [weak self] _ -> Just<[CLPlacemark]> in
+                            self?.alert = AlertState(
+                                title: "Error",
+                                message: AppError.geocodingFailed.userMessage
+                            )
+                            return Just([])
+                        }
+                        .receive(on: DispatchQueue.main)
+                        .sink { [weak self] placemarks in
+                            guard let self else { return }
+                            self.lastGeocodedCheckpoint = location
+                            if let start = self.startLocation {
+                                self.distanceMeters = location.distance(
+                                    from: start
+                                )
+                            }
+                            let place = VisitedPlace.from(
+                                placemarks.first,
+                                coordinate: location.coordinate,
+                                timestamp: Date()
+                            )
+                            self.visited.append(place)
+                            #if DEBUG
+                                self.dlog(
+                                    "first-fix pin appended: \(place.title)"
+                                )
+                            #endif
+                        }
+                        .store(in: &self.bag.cancellables)
                 }
+
                 // Always publish the latest coordinate for the View to center on.
                 self.currentCoordinate = location.coordinate
-
                 if let last = self.lastCheckpoint {
                     let step = location.distance(from: last)
                     if step >= 20 {
                         self.lastCheckpoint = location
-                        // Total distance from the initial fix
-                        if let start = self.startLocation {
-                            self.distanceMeters = location.distance(from: start)
-                        }
                         #if DEBUG
                             dlog(
-                                "moved ≥20m (step=\(Int(step))) total=\(Int(self.distanceMeters)) → will trigger geocode on cadence"
+                                "moved ≥20m (step=\(Int(step))) → will trigger geocode on cadence"
                             )
                         #endif
+                        // Do not update distance here; we commit distance when we commit the pin.
                         self.movementSubject.send(location)
                     }
                 }
@@ -188,6 +219,9 @@ public final class MapTabViewModel: ObservableObject {
             .sink { [weak self] (loc: CLLocation, placemarks: [CLPlacemark]) in
                 guard let self else { return }
                 self.lastGeocodedCheckpoint = loc
+                if let start = self.startLocation {
+                    self.distanceMeters = loc.distance(from: start)
+                }
                 let place = VisitedPlace.from(
                     placemarks.first,
                     coordinate: loc.coordinate,
