@@ -1,4 +1,4 @@
-// App/MapTab/Helpers/MapTabViewModel+Helpers.swift
+// File: App/MapTab/Helpers/MapTabViewModel+Helpers.swift
 
 import Combine
 import CoreLocation
@@ -18,19 +18,13 @@ extension MapTabViewModel {
             now: Date()
         )
         .catch { [weak self] _ -> Empty<VisitedPlace, Never> in
-            self?.alert = AlertState(
-                title: "Error",
-                message: AppError.geocodingFailed.userMessage
-            )
+            self?.handleGeocodeError()
             return Empty()
         }
         .receive(on: DispatchQueue.main)
         .sink { [weak self] place in
             guard let self else { return }
             self.commitPinAndDistance(at: location, place: place)
-            #if DEBUG
-                self.dlog("first-fix pin appended: \(place.title)")
-            #endif
         }
         .store(in: &self.bag.cancellables)
     }
@@ -43,11 +37,6 @@ extension MapTabViewModel {
         }
         if let place {
             self.visited.append(place)
-            #if DEBUG
-                self.dlog(
-                    "append visited (\(self.visited.count) total): \(place.title)"
-                )
-            #endif
         }
     }
 
@@ -70,4 +59,11 @@ extension MapTabViewModel {
             .eraseToAnyPublisher()
     }
 
+    /// Shared UI error mapping for geocoding failures.
+    func handleGeocodeError() {
+        self.alert = AlertState(
+            title: "Error",
+            message: AppError.geocodingFailed.userMessage
+        )
+    }
 }

@@ -13,10 +13,6 @@ public final class MapTabViewModel: ObservableObject {
     private let permissionManager: PermissionManagerType
     private var permissionRequested = false
 
-    #if DEBUG
-        func dlog(_ msg: String) { print("[MapVM] \(msg)") }
-    #endif
-
     // UI state
     @Published public var distanceMeters: Double = 0
     @Published public var visited: [VisitedPlace] = []
@@ -53,9 +49,6 @@ public final class MapTabViewModel: ObservableObject {
 
     public func startTracking() {
         // Idempotent guard: avoid double subscriptions.
-        #if DEBUG
-            dlog("startTracking() called. isTracking=\(isTracking)")
-        #endif
         if isTracking { return }
         isTracking = true
 
@@ -70,10 +63,10 @@ public final class MapTabViewModel: ObservableObject {
                 case .needsRequest:
                     if !self.permissionRequested {
                         self.permissionRequested = true
-                        self.permissionManager.requestLocationPermission()  // system prompt “right there”
+                        self.permissionManager.requestLocationPermission()
                     }
                 case .needsSettings:
-                    self.gate = .needsSettings  // View shows a single-OK overlay; no settings deep link
+                    self.gate = .needsSettings
                 }
             }
             .store(in: &bag.cancellables)
@@ -85,16 +78,8 @@ public final class MapTabViewModel: ObservableObject {
                 guard let self else { return }
                 switch status {
                 case .authorizedAlways, .authorizedWhenInUse:
-                    #if DEBUG
-                        dlog("auth=\(status) → startUpdatingLocation()")
-                    #endif
                     self.env.locationService.startUpdates()
                 case .denied, .restricted:
-                    #if DEBUG
-                        dlog(
-                            "auth=\(status) → stopUpdatingLocation(); alert not authorized"
-                        )
-                    #endif
                     self.env.locationService.stopUpdates()
                     self.alert = AlertState(
                         title: "Location Permission",
@@ -108,7 +93,7 @@ public final class MapTabViewModel: ObservableObject {
             }
             .store(in: &bag.cancellables)
 
-        // 1) Process raw locations → 20m gate + distance accumulation
+        // 1) Process raw locations → 20m gate
         env.locationService.locationUpdates
             .receive(on: DispatchQueue.main)  // UI updates on main
             .sink { [weak self] location in
@@ -120,15 +105,11 @@ public final class MapTabViewModel: ObservableObject {
 
                 // Always publish the latest coordinate for the View to center on.
                 self.currentCoordinate = location.coordinate
+
                 if let last = self.lastCheckpoint {
                     let step = location.distance(from: last)
                     if step >= 20 {
                         self.lastCheckpoint = location
-                        #if DEBUG
-                            dlog(
-                                "moved ≥20m (step=\(Int(step))) → will trigger geocode on cadence"
-                            )
-                        #endif
                         // Do not update distance here; we commit distance when we commit the pin.
                         self.movementSubject.send(location)
                     }
@@ -156,11 +137,6 @@ public final class MapTabViewModel: ObservableObject {
                     return Empty<(CLLocation, VisitedPlace?), Never>()
                         .eraseToAnyPublisher()
                 }
-                #if DEBUG
-                    dlog(
-                        "geocoding @ lat=\(loc.coordinate.latitude), lon=\(loc.coordinate.longitude)"
-                    )
-                #endif
                 return geocodeVisitedPlace(
                     self.env.geocodingService,
                     for: loc,
@@ -168,13 +144,7 @@ public final class MapTabViewModel: ObservableObject {
                 )
                 .map { (loc, Optional($0)) }
                 .catch { [weak self] _ in
-                    self?.alert = AlertState(
-                        title: "Error",
-                        message: AppError.geocodingFailed.userMessage
-                    )
-                    #if DEBUG
-                        self?.dlog("geocoding failed → alert surfaced")
-                    #endif
+                    self?.handleGeocodeError()
                     return Just<(CLLocation, VisitedPlace?)>((loc, nil))
                         .eraseToAnyPublisher()
                 }
@@ -194,9 +164,6 @@ public final class MapTabViewModel: ObservableObject {
         env.locationService.stopUpdates()
         // Cancel Combine pipelines (auth, locations, timer).
         bag.cancellables.removeAll()
-        #if DEBUG
-            dlog("stopTracking() — cancelled pipelines and stopped updates")
-        #endif
     }
 
     public func select(place: VisitedPlace?) {
