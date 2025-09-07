@@ -13,7 +13,7 @@ struct MapCanvasView: View {
     var body: some View {
         canvasView
     }
-    
+
     var canvasView: some View {
         Group {
             if #available(iOS 17, *) {
@@ -35,7 +35,8 @@ struct MapCanvasView: View {
                         }
                     }
                 }
-            } else { /// Fallback
+            } else {
+                /// Fallback
                 Map(
                     coordinateRegion: $region,
                     showsUserLocation: true,
