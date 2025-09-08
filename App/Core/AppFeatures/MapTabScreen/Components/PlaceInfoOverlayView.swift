@@ -13,7 +13,10 @@ struct PlaceInfoOverlayView: View {
     }
 
     var placeInfoView: some View {
-        OverlayCardView(title: "Location Info", onDismiss: onDismiss) {
+        OverlayCardView(
+            title: "Location Info",
+            onDismiss: onDismiss
+        ) {
             Text(details)
                 .multilineTextAlignment(.center)
         }
