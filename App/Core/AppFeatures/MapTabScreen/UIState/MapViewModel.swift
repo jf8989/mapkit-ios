@@ -9,7 +9,7 @@ public final class MapViewModel: ObservableObject {
     /// Inputs
     let env: AppEnvironment
     let bag = TaskBag()
-    private let permissionManager: PermissionManagerType
+    private let permissionManagerType: PermissionManagerType
     private var permissionRequested = false
 
     /// UI state
@@ -41,7 +41,7 @@ public final class MapViewModel: ObservableObject {
 
     public init(env: AppEnvironment) {
         self.env = env
-        self.permissionManager = env.permissionManager
+        self.permissionManagerType = env.permissionAPI
     }
 
     // MARK: - Intents
@@ -52,7 +52,7 @@ public final class MapViewModel: ObservableObject {
         isTracking = true
 
         // 0) Permission flow — manager-as-router (request once; show gate only when denied)
-        permissionManager.locationGate
+        permissionManagerType.locationGate
             .receive(on: DispatchQueue.main)
             .sink { [weak self] state in
                 guard let self else { return }
@@ -62,7 +62,7 @@ public final class MapViewModel: ObservableObject {
                 case .needsRequest:
                     if !self.permissionRequested {
                         self.permissionRequested = true
-                        self.permissionManager.requestLocationPermission()
+                        self.permissionManagerType.requestLocationPermission()
                     }
                 case .needsSettings:
                     self.permissionGate = .needsSettings
@@ -71,15 +71,15 @@ public final class MapViewModel: ObservableObject {
             .store(in: &bag.cancellables)
 
         // React to authorization changes (includes the current value on subscribe).
-        env.locationService.authorizationStatus
+        env.locationAPI.authorizationStatus
             .receive(on: DispatchQueue.main)
             .sink { [weak self] status in
                 guard let self else { return }
                 switch status {
                 case .authorizedAlways, .authorizedWhenInUse:
-                    self.env.locationService.startUpdates()
+                    self.env.locationAPI.startUpdates()
                 case .denied, .restricted:
-                    self.env.locationService.stopUpdates()
+                    self.env.locationAPI.stopUpdates()
                     self.alert = AlertState(
                         title: "Location Permission",
                         message: AppError.notAuthorized.userMessage
@@ -93,7 +93,7 @@ public final class MapViewModel: ObservableObject {
             .store(in: &bag.cancellables)
 
         // Location manager errors → alert (except transient “location unknown”).
-        env.locationService.errors
+        env.locationAPI.errors
             .receive(on: DispatchQueue.main)
             .sink { [weak self] err in
                 guard let self else { return }
@@ -109,7 +109,7 @@ public final class MapViewModel: ObservableObject {
             .store(in: &bag.cancellables)
 
         // 1) Process raw locations → 20m gate
-        env.locationService.locationUpdates
+        env.locationAPI.locationUpdates
             .receive(on: DispatchQueue.main)  // UI updates on main
             .sink { [weak self] location in
                 guard let self else { return }
@@ -153,7 +153,7 @@ public final class MapViewModel: ObservableObject {
                         .eraseToAnyPublisher()
                 }
                 return geocodeVisitedPlace(
-                    self.env.geocodingService,
+                    self.env.geocodingAPI,
                     for: loc,
                     now: Date()
                 )
@@ -176,7 +176,7 @@ public final class MapViewModel: ObservableObject {
     public func stopTracking() {
         guard isTracking else { return }
         isTracking = false
-        env.locationService.stopUpdates()
+        env.locationAPI.stopUpdates()
         // Cancel Combine pipelines (auth, locations, timer).
         bag.cancellables.removeAll()
     }

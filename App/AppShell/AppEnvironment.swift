@@ -4,18 +4,18 @@ import Foundation
 
 /// AppEnvironment wires protocols to live implementations.
 public struct AppEnvironment {
-    public let locationService: LocationServiceType
-    public let geocodingService: GeocodingServiceType
-    public let permissionManager: PermissionManagerType
+    public let locationAPI: LocationServiceType
+    public let geocodingAPI: GeocodingServiceType
+    public let permissionAPI: PermissionManagerType
 
     public init(
-        locationService: LocationServiceType,
-        geocodingService: GeocodingServiceType,
-        permissionManager: PermissionManagerType
+        locationAPI: LocationServiceType,
+        geocodingAPI: GeocodingServiceType,
+        permissionAPI: PermissionManagerType
     ) {
-        self.locationService = locationService
-        self.geocodingService = geocodingService
-        self.permissionManager = permissionManager
+        self.locationAPI = locationAPI
+        self.geocodingAPI = geocodingAPI
+        self.permissionAPI = permissionAPI
     }
 
     public static let live = {
@@ -23,9 +23,9 @@ public struct AppEnvironment {
         let geocoding = GeocodingService()
         let permissions = PermissionManager(locationService: location)
         return AppEnvironment(
-            locationService: location,
-            geocodingService: geocoding,
-            permissionManager: permissions
+            locationAPI: location,
+            geocodingAPI: geocoding,
+            permissionAPI: permissions
         )
     }()
 }

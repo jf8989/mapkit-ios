@@ -13,7 +13,7 @@ extension MapViewModel {
         self.lastCheckpoint = location
 
         geocodeVisitedPlace(
-            self.env.geocodingService,
+            self.env.geocodingAPI,
             for: location,
             now: Date()
         )
