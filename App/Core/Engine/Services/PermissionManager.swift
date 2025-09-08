@@ -4,19 +4,19 @@ import Combine
 
 /// Router that forwards to specific permission handlers. Location-only for now.
 public final class PermissionManager: PermissionManagerType {
-    private let locationHandler: LocationPermissionHandlerType
-
+    private let locationPermissionHandler: LocationPermissionHandlerType
+ 
     public init(locationService: LocationServiceType) {
-        self.locationHandler = LocationPermissionHandler(
+        self.locationPermissionHandler = LocationPermissionHandler(
             locationService: locationService
         )
     }
 
     public var locationGate: AnyPublisher<LocationPermissionGate, Never> {
-        locationHandler.gate
+        locationPermissionHandler.gate
     }
 
     public func requestLocationPermission() {
-        locationHandler.request()
+        locationPermissionHandler.request()
     }
 }

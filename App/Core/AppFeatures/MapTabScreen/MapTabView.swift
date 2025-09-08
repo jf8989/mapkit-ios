@@ -6,7 +6,7 @@ import SwiftUI
 /// Map tab orchestrator: composes DistanceHeader, MapCanvas, and overlays.
 /// Business logic stays in the VM.
 struct MapTabView: View {
-    @ObservedObject var vm: MapTabViewModel
+    @ObservedObject var vm: MapViewModel
 
     private static let initialRegion = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 0, longitude: 0),
@@ -86,8 +86,10 @@ struct MapTabView: View {
                 latitudeDelta: 0.01,
                 longitudeDelta: 0.01
             )
-            cameraPosition = .region(.init(center: coord, span: tight))  // iOS 17 path
-            region = .init(center: coord, span: tight)  // iOS 16 fallback
+            // iOS 17 path
+            cameraPosition = .region(.init(center: coord, span: tight))
+            // iOS 16 fallback
+            region = .init(center: coord, span: tight)
         }
 
         // Drive permission overlay visibility from VM gate

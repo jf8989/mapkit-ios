@@ -4,12 +4,12 @@ import SwiftUI
 
 struct MainAppView: View {
     let env: AppEnvironment
-    @StateObject private var mapVM: MapTabViewModel
+    @StateObject private var mapVM: MapViewModel
     @Environment(\.scenePhase) private var scenePhase
 
     init(env: AppEnvironment) {
         self.env = env
-        _mapVM = StateObject(wrappedValue: MapTabViewModel(env: env))
+        _mapVM = StateObject(wrappedValue: MapViewModel(env: env))
     }
 
     var body: some View { Content() }

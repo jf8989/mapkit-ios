@@ -5,7 +5,7 @@ import SwiftUI
 
 /// Hosts the Map UI for both iOS 17+ (MapContentBuilder) and iOS 16 (legacy Map).
 struct MapCanvasView: View {
-    @ObservedObject var vm: MapTabViewModel
+    @ObservedObject var vm: MapViewModel
     @Binding var cameraPosition: MapCameraPosition
     @Binding var region: MKCoordinateRegion
     @Binding var showPlaceInfo: Bool
@@ -19,7 +19,7 @@ struct MapCanvasView: View {
             if #available(iOS 17, *) {
                 Map(position: $cameraPosition) {
                     UserAnnotation()
-                    ForEach(vm.visited) { place in
+                    ForEach(vm.visitedPlacesList) { place in
                         Annotation(place.title, coordinate: place.coordinate) {
                             Button {
                                 vm.select(place: place)
@@ -40,7 +40,7 @@ struct MapCanvasView: View {
                 Map(
                     coordinateRegion: $region,
                     showsUserLocation: true,
-                    annotationItems: vm.visited
+                    annotationItems: vm.visitedPlacesList
                 ) { place in
                     MapAnnotation(coordinate: place.coordinate) {
                         Button {

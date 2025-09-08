@@ -1,4 +1,4 @@
-// App/Core/AppFeatures/MapTabScreen/UIState/MapTabViewModel.swift
+// App/Core/AppFeatures/MapTabScreen/UIState/MapViewModel.swift
 
 import Combine
 import CoreLocation
@@ -14,7 +14,7 @@ public final class MapViewModel: ObservableObject {
 
     /// UI state
     @Published public var distanceMeters: Double = 0
-    @Published public var visited: [VisitedPlace] = []
+    @Published public var visitedPlacesList: [VisitedPlace] = []
     /// Latest known coordinate (nil until we get a real fix). View uses this to center the map.
     @Published public private(set) var currentCoordinate:
         CLLocationCoordinate2D?

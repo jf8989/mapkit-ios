@@ -4,7 +4,7 @@ import Combine
 import CoreLocation
 import Foundation
 
-extension MapTabViewModel {
+extension MapViewModel {
     // MARK: - Extracted helpers
 
     /// First authorized GPS fix: seed start/checkpoints and perform one-shot geocode.
@@ -36,7 +36,7 @@ extension MapTabViewModel {
             self.distanceMeters = loc.distance(from: start)
         }
         if let place {
-            self.visited.append(place)
+            self.visitedPlacesList.append(place)
         }
     }
 
