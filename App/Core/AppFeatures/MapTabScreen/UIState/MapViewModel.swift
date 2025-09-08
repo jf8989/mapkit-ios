@@ -9,7 +9,6 @@ public final class MapViewModel: ObservableObject {
     /// Inputs
     let env: AppEnvironment
     let bag = TaskBag()
-    private let permissionManagerType: PermissionManagerType
     private var permissionRequested = false
 
     /// UI state
@@ -41,7 +40,6 @@ public final class MapViewModel: ObservableObject {
 
     public init(env: AppEnvironment) {
         self.env = env
-        self.permissionManagerType = env.permissionAPI
     }
 
     // MARK: - Intents
@@ -52,7 +50,7 @@ public final class MapViewModel: ObservableObject {
         isTracking = true
 
         // 0) Permission flow — manager-as-router (request once; show gate only when denied)
-        permissionManagerType.locationGate
+        env.permissionAPI.locationGate
             .receive(on: DispatchQueue.main)
             .sink { [weak self] state in
                 guard let self else { return }
@@ -62,7 +60,7 @@ public final class MapViewModel: ObservableObject {
                 case .needsRequest:
                     if !self.permissionRequested {
                         self.permissionRequested = true
-                        self.permissionManagerType.requestLocationPermission()
+                        self.env.permissionAPI.requestLocationPermission()
                     }
                 case .needsSettings:
                     self.permissionGate = .needsSettings

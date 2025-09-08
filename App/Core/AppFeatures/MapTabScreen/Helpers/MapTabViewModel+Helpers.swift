@@ -47,8 +47,7 @@ extension MapViewModel {
         for location: CLLocation,
         now: @autoclosure @escaping () -> Date = Date()
     ) -> AnyPublisher<VisitedPlace, Error> {
-        geocoder
-            .reverseGeocode(location: location)
+        geocoder.reverseGeocode(location: location)
             .map { placemarks in
                 let acc = location.horizontalAccuracy
                 let safeAcc: CLLocationAccuracy? = acc >= 0 ? acc : nil
