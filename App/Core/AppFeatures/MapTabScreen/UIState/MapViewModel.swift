@@ -131,8 +131,7 @@ public final class MapViewModel: ObservableObject {
             .store(in: &bag.cancellables)
 
         // 2) Every 5s, if movement happened since last geocode, reverse-geocode
-        timer
-            .compactMap { [weak self] _ in
+        timer.compactMap { [weak self] _ in
                 self?.movementSubject.value as CLLocation?
             }
             .filter { [weak self] (loc: CLLocation) in
