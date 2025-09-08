@@ -5,7 +5,7 @@ import CoreLocation
 import Foundation
 
 @MainActor
-public final class MapTabViewModel: ObservableObject {
+public final class MapViewModel: ObservableObject {
     /// Inputs
     let env: AppEnvironment
     let bag = TaskBag()
