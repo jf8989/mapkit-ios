@@ -57,7 +57,7 @@ struct MapTabView: View {
 
         // Permission gate overlay — shown only when user previously denied/restricted
         .overlay {
-            if showPermissionGate, vm.gate == .needsSettings {
+            if showPermissionGate, vm.permissionGate == .needsSettings {
                 OverlayCardView(title: "Location Permission") {
                     // Outside tap dismiss; overlay will reappear until user authorizes in Settings later
                     showPermissionGate = false
@@ -91,7 +91,7 @@ struct MapTabView: View {
         }
 
         // Drive permission overlay visibility from VM gate
-        .onChange(of: vm.gate) { _, newGate in
+        .onChange(of: vm.permissionGate) { _, newGate in
             showPermissionGate = (newGate == .needsSettings)
         }
     }

@@ -21,7 +21,7 @@ public final class MapTabViewModel: ObservableObject {
     @Published public var alert: AlertState?
 
     /// Permission gate for Location (nil = authorized / no gate)
-    @Published public private(set) var gate: LocationPermissionGate?
+    @Published public private(set) var permissionGate: LocationPermissionGate?
 
     /// Selection (for pin tap later)
     @Published public var selectedPlace: VisitedPlace?
@@ -58,14 +58,14 @@ public final class MapTabViewModel: ObservableObject {
                 guard let self else { return }
                 switch state {
                 case .authorized:
-                    self.gate = nil
+                    self.permissionGate = nil
                 case .needsRequest:
                     if !self.permissionRequested {
                         self.permissionRequested = true
                         self.permissionManager.requestLocationPermission()
                     }
                 case .needsSettings:
-                    self.gate = .needsSettings
+                    self.permissionGate = .needsSettings
                 }
             }
             .store(in: &bag.cancellables)

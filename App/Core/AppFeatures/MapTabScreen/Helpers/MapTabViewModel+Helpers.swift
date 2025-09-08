@@ -1,4 +1,4 @@
-// File: App/MapTab/Helpers/MapTabViewModel+Helpers.swift
+// App/Core/AppFeatures/MapTabScreen/Helpers/MapTabViewModel+Helpers.swift
 
 import Combine
 import CoreLocation
