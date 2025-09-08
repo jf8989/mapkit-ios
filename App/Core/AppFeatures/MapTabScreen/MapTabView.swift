@@ -78,7 +78,6 @@ struct MapTabView: View {
                 .onTapGesture { showPermissionGate = false }
             }
         }
-
         .padding(.top, 8)
 
         // Center the map on the first/next fix
