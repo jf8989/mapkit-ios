@@ -1,4 +1,4 @@
-// App/MapTab/Components/DistanceHeaderView.swift
+// App/Core/AppFeatures/MapTabScreen/Components/DistanceHeaderView.swift
 
 import SwiftUI
 

@@ -1,4 +1,4 @@
-// App/MapTab/Components/MapCanvasView.swift
+// App/Core/AppFeatures/MapTabScreen/Components/MapCanvasView.swift
 
 import MapKit
 import SwiftUI
